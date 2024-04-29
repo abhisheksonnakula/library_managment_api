@@ -107,11 +107,19 @@ export class BorrowHService {
     async getTotalBooksBorrowedByUser() {
         const users = await this.borrowHRepository.aggregate([
             {
+                $match: {
+                    status: 'Borrowed'
+                },
+            },
+            {
+               
                 $group: {
                     _id: "$userId",
-                    total: { $sum: 1 }
+                    total: { $sum: 1 },
+                    books: { $push: "$bookId" }
                 }
-            }
+            },
+            
         ]);
         return users;
     };
